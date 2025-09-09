@@ -1,0 +1,30 @@
+{
+  "openapi": "3.0.3",
+  "info": { "title": "Activity Reporting API", "version": "1.0.0" },
+  "servers": [{ "url": "http://localhost:3001" }],
+  "paths": {
+    "/health": {
+      "get": { "summary": "Health check", "responses": { "200": { "description": "OK" } } }
+    },
+    "/api/auth/login": {
+      "post": {
+        "summary": "Login",
+        "requestBody": { "required": true, "content": { "application/json": { "schema": { "type": "object", "properties": { "email": {"type":"string"}, "password": {"type":"string"} }, "required": ["email","password"] } } } },
+        "responses": { "200": { "description": "Logged in" }, "401": { "description": "Invalid creds" } }
+      }
+    },
+    "/api/auth/me": { "get": { "summary": "Current user", "responses": { "200": { "description": "User" }, "401": { "description": "Unauthorized" } } } },
+    "/api/activities": {
+      "get": { "summary": "List activities", "parameters": [
+        {"name":"category","in":"query","schema":{"type":"string"}},
+        {"name":"page","in":"query","schema":{"type":"integer"}},
+        {"name":"limit","in":"query","schema":{"type":"integer"}}
+      ], "responses": { "200": { "description": "List" } } },
+      "post": { "summary": "Create activity", "requestBody": { "required": true, "content": { "application/json": { "schema": { "type": "object", "properties": { "category": {"type":"string"}, "title": {"type":"string"}, "description": {"type":"string"}, "timestamp": {"type":"string","format":"date-time"} }, "required": ["category","title","timestamp"] } } } }, "responses": { "201": { "description": "Created" } } }
+    },
+    "/api/activities/{id}": { "put": { "summary": "Update activity", "parameters": [{"name":"id","in":"path","required":true,"schema":{"type":"string"}}], "responses": { "200": { "description": "Updated" }, "404": { "description": "Not found" } } } },
+    "/api/activities/{id}/metrics": { "patch": { "summary": "Update metrics", "parameters": [{"name":"id","in":"path","required":true,"schema":{"type":"string"}}], "responses": { "200": { "description": "Metrics updated" } } } }
+  }
+}
+
+

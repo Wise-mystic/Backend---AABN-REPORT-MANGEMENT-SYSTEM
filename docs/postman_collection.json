@@ -1,0 +1,117 @@
+{
+  "info": {
+    "name": "Activity Reporting API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "header": [{"key":"Content-Type","value":"application/json"}],
+            "url": {"raw": "{{baseUrl}}/api/auth/register", "host": ["{{baseUrl}}"], "path": ["api","auth","register"]},
+            "body": {"mode": "raw", "raw": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"Passw0rd!\",\n  \"name\": \"User\"\n}"}
+          }
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [{"key":"Content-Type","value":"application/json"}],
+            "url": {"raw": "{{baseUrl}}/api/auth/login", "host": ["{{baseUrl}}"], "path": ["api","auth","login"]},
+            "body": {"mode": "raw", "raw": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"Passw0rd!\"\n}"}
+          }
+        },
+        {
+          "name": "Me",
+          "request": {
+            "method": "GET",
+            "header": [{"key":"Authorization","value":"Bearer {{token}}"}],
+            "url": {"raw": "{{baseUrl}}/api/auth/me", "host": ["{{baseUrl}}"], "path": ["api","auth","me"]}
+          }
+        }
+      ]
+    },
+    {
+      "name": "Activities",
+      "item": [
+        {
+          "name": "List",
+          "request": {
+            "method": "GET",
+            "header": [{"key":"Authorization","value":"Bearer {{token}}"}],
+            "url": {"raw": "{{baseUrl}}/api/activities?limit=20", "host": ["{{baseUrl}}"], "path": ["api","activities"], "query": [{"key":"limit","value":"20"}]}
+          }
+        },
+        {
+          "name": "Create",
+          "request": {
+            "method": "POST",
+            "header": [{"key":"Content-Type","value":"application/json"},{"key":"Authorization","value":"Bearer {{token}}"}],
+            "url": {"raw": "{{baseUrl}}/api/activities", "host": ["{{baseUrl}}"], "path": ["api","activities"]},
+            "body": {"mode": "raw", "raw": "{\n  \"category\": \"social-media\",\n  \"platform\": \"instagram\",\n  \"title\": \"Post campaign\",\n  \"description\": \"...\",\n  \"timestamp\": \"2025-01-01T10:00:00.000Z\"\n}"}
+          }
+        },
+        {
+          "name": "Update",
+          "request": {
+            "method": "PUT",
+            "header": [{"key":"Content-Type","value":"application/json"},{"key":"Authorization","value":"Bearer {{token}}"}],
+            "url": {"raw": "{{baseUrl}}/api/activities/:id", "host": ["{{baseUrl}}"], "path": ["api","activities",":id"]},
+            "body": {"mode": "raw", "raw": "{\n  \"title\": \"Updated title\"\n}"}
+          }
+        },
+        {
+          "name": "Delete",
+          "request": {
+            "method": "DELETE",
+            "header": [{"key":"Authorization","value":"Bearer {{token}}"}],
+            "url": {"raw": "{{baseUrl}}/api/activities/:id", "host": ["{{baseUrl}}"], "path": ["api","activities",":id"]}
+          }
+        },
+        {
+          "name": "Patch Metrics",
+          "request": {
+            "method": "PATCH",
+            "header": [{"key":"Content-Type","value":"application/json"},{"key":"Authorization","value":"Bearer {{token}}"}],
+            "url": {"raw": "{{baseUrl}}/api/activities/:id/metrics", "host": ["{{baseUrl}}"], "path": ["api","activities",":id","metrics"]},
+            "body": {"mode": "raw", "raw": "{\n  \"likes\": 10,\n  \"shares\": 2\n}"}
+          }
+        },
+        {
+          "name": "Stats",
+          "request": {
+            "method": "GET",
+            "header": [{"key":"Authorization","value":"Bearer {{token}}"}],
+            "url": {"raw": "{{baseUrl}}/api/activities/stats", "host": ["{{baseUrl}}"], "path": ["api","activities","stats"]}
+          }
+        },
+        {
+          "name": "Export JSON",
+          "request": {
+            "method": "GET",
+            "header": [{"key":"Authorization","value":"Bearer {{token}}"}],
+            "url": {"raw": "{{baseUrl}}/api/activities/export?format=json", "host": ["{{baseUrl}}"], "path": ["api","activities","export"], "query": [{"key":"format","value":"json"}]}
+          }
+        },
+        {
+          "name": "Export CSV",
+          "request": {
+            "method": "GET",
+            "header": [{"key":"Authorization","value":"Bearer {{token}}"}],
+            "url": {"raw": "{{baseUrl}}/api/activities/export?format=csv", "host": ["{{baseUrl}}"], "path": ["api","activities","export"], "query": [{"key":"format","value":"csv"}]}
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:3001" },
+    { "key": "token", "value": "" }
+  ]
+}
+
+
