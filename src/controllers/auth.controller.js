@@ -27,7 +27,7 @@ export async function register(req, res, next) {
     // create default workspace and membership
     const ws = await Workspace.create({ name: `${user.name}'s Workspace`, owner_id: user.id });
     await Membership.create({ workspace_id: ws.id, user_id: user.id, role: 'admin', is_default: true });
-    res.status(201).json({ success: true, data: { user: sanitizeUser(user), verify_token: isDev() ? v.token : undefined }, message: 'Registered' });
+    res.status(201).json({ success: true, data: { user: sanitizeUser(user), access_token: token, verify_token: isDev() ? v.token : undefined }, message: 'Registered' });
   } catch (err) { next(err); }
 }
 
@@ -43,7 +43,7 @@ export async function login(req, res, next) {
     const token = signJwtForUser(user);
     setAuthCookie(res, token);
     await issueRefreshCookie(res, user, req);
-    res.json({ success: true, data: { user: sanitizeUser(user) }, message: 'Logged in' });
+    res.json({ success: true, data: { user: sanitizeUser(user), access_token: token }, message: 'Logged in' });
   } catch (err) { next(err); }
 }
 
@@ -67,6 +67,7 @@ function setAuthCookie(res, token) {
     // In production (cross-site frontend/backend), allow third-party cookie
     // so the browser will include it with fetch credentials.
     sameSite: isProd ? 'none' : 'lax',
+    ...(isProd ? { partitioned: true } : {}),
     maxAge: 24 * 60 * 60 * 1000,
     path: '/',
   });
@@ -177,7 +178,7 @@ export async function refresh(req, res, next) {
     await issueRefreshCookie(res, user, req);
     const access = signJwtForUser(user);
     setAuthCookie(res, access);
-    res.json({ success: true, data: { user: sanitizeUser(user) }, message: 'Refreshed' });
+    res.json({ success: true, data: { user: sanitizeUser(user), access_token: access }, message: 'Refreshed' });
   } catch (err) { next(err); }
 }
 
@@ -208,6 +209,7 @@ async function issueRefreshCookie(res, user, req) {
     httpOnly: true,
     secure: isProd,
     sameSite: isProd ? 'none' : 'lax',
+    ...(isProd ? { partitioned: true } : {}),
     maxAge: 7 * 24 * 60 * 60 * 1000,
     path: '/',
   });
