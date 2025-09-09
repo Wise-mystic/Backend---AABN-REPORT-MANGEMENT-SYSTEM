@@ -75,7 +75,7 @@ export async function accept(req, res, next) {
     // Set auth cookies for convenience (if they just signed up)
     const jwt = signJwtForUser(user);
     const isProd = process.env.NODE_ENV === 'production';
-    res.cookie('token', jwt, { httpOnly: true, secure: isProd, sameSite: isProd ? 'lax' : 'lax', maxAge: 24*60*60*1000, path: '/' });
+    res.cookie('token', jwt, { httpOnly: true, secure: isProd, sameSite: isProd ? 'none' : 'lax', maxAge: 24*60*60*1000, path: '/' });
 
     res.json({ success: true, message: 'Invite accepted' });
   } catch (e) { next(e); }

@@ -64,7 +64,9 @@ function setAuthCookie(res, token) {
   res.cookie('token', token, {
     httpOnly: true,
     secure: isProd,
-    sameSite: isProd ? 'lax' : 'lax',
+    // In production (cross-site frontend/backend), allow third-party cookie
+    // so the browser will include it with fetch credentials.
+    sameSite: isProd ? 'none' : 'lax',
     maxAge: 24 * 60 * 60 * 1000,
     path: '/',
   });
@@ -78,8 +80,8 @@ export async function logout(req, res, next) {
     if (refresh) {
       await RefreshToken.findOneAndUpdate({ jti: refresh }, { revoked_at: new Date() });
     }
-    res.clearCookie('token', { httpOnly: true, secure: isProd, sameSite: isProd ? 'lax' : 'lax', path: '/' });
-    res.clearCookie('refresh', { httpOnly: true, secure: isProd, sameSite: isProd ? 'lax' : 'lax', path: '/' });
+    res.clearCookie('token', { httpOnly: true, secure: isProd, sameSite: isProd ? 'none' : 'lax', path: '/' });
+    res.clearCookie('refresh', { httpOnly: true, secure: isProd, sameSite: isProd ? 'none' : 'lax', path: '/' });
     res.json({ success: true, message: 'Logged out' });
   } catch (err) { next(err); }
 }
@@ -205,7 +207,7 @@ async function issueRefreshCookie(res, user, req) {
   res.cookie('refresh', jti, {
     httpOnly: true,
     secure: isProd,
-    sameSite: isProd ? 'lax' : 'lax',
+    sameSite: isProd ? 'none' : 'lax',
     maxAge: 7 * 24 * 60 * 60 * 1000,
     path: '/',
   });
